@@ -2,26 +2,53 @@ package com.alain.cursos.miapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.etNombre)
+    EditText etNombre;
+    @Bind(R.id.etApellidos)
+    EditText etApellidos;
+    @Bind(R.id.etEmail)
+    EditText etEmail;
+    @Bind(R.id.etTelefono)
+    EditText etTelefono;
+    @Bind(R.id.swTerminos)
+    Switch swTerminos;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
+    @Bind(R.id.nav_view)
+    NavigationView navigationView;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         int a = 1;
@@ -31,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         int c = a + b;
         Log.d("c; ", String.valueOf(c));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,20 +67,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -102,8 +128,25 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @OnClick(R.id.btnGuardar)
+    public void saveData() {
+        if(swTerminos.isChecked()) {
+            Toast.makeText(this, "Registrando a " + etNombre.getText().toString() + "...",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(contentMain, "Debe de aceptar los terminos y condiciones.", Snackbar.LENGTH_LONG)
+            .setAction("OK", new View.OnClickListener () {
+            @Override
+                public void onClick(View v) {}
+                swTerminos.setChecked(true);
+                }
+            }).show();
+        }
+    }
+
 }
